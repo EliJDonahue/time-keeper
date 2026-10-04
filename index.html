@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b0f14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TimeKeeper">
+  <title>TimeKeeper</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-state="normal" data-run="ready">
+
+  <main class="stage" id="stage">
+    <p class="speaker" id="speaker" hidden></p>
+
+    <div class="readout">
+      <p class="time" id="time" role="timer" aria-live="off">5:00</p>
+      <p class="label" id="label" aria-live="polite">Ready</p>
+    </div>
+
+    <div class="meter" aria-hidden="true">
+      <div class="meter-fill" id="meter-fill"></div>
+      <div class="meter-mark" id="meter-mark"></div>
+    </div>
+
+    <button class="open-controls" id="open-controls" type="button">Controls</button>
+  </main>
+
+  <dialog class="panel" id="panel" aria-labelledby="panel-title">
+    <form method="dialog" class="panel-body" id="panel-form">
+      <h2 id="panel-title">Timer</h2>
+
+      <fieldset class="field">
+        <legend>Slot length</legend>
+        <div class="segmented" id="slot-choices">
+          <label><input type="radio" name="slot" value="5" checked><span>5 min</span></label>
+          <label><input type="radio" name="slot" value="15"><span>15 min</span></label>
+          <label><input type="radio" name="slot" value="custom"><span>Custom</span></label>
+        </div>
+      </fieldset>
+
+      <div class="field" id="custom-field" hidden>
+        <label for="custom-minutes">Custom length in minutes</label>
+        <input id="custom-minutes" type="number" inputmode="numeric" min="1" max="180" step="1" value="10">
+        <p class="help" id="custom-help">Warning appears with 3 min 20 sec left.</p>
+      </div>
+
+      <div class="field">
+        <label for="speaker-name">Speaker name (optional)</label>
+        <input id="speaker-name" type="text" maxlength="60" autocomplete="off">
+      </div>
+
+      <p class="help" id="warn-summary">Warning appears with 2 min left.</p>
+
+      <div class="actions">
+        <button type="button" class="btn primary" id="btn-start">Start</button>
+        <button type="button" class="btn" id="btn-pause" hidden>Pause</button>
+        <button type="button" class="btn" id="btn-reset">Reset</button>
+        <button type="button" class="btn ghost" id="btn-close">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

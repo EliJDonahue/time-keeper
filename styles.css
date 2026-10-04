@@ -1,0 +1,245 @@
+/*
+  TimeKeeper display styles.
+  One theme only (dark). A stage display is read from a distance in dim rooms,
+  so there is no light mode and no prefers-color-scheme switch.
+
+  Each state differs in LIGHTNESS and HUE, and also in label text and meter
+  pattern, so no state depends on hue alone (deuteranopia, protanopia, tritanopia).
+
+  Contrast (text on background, WCAG relative luminance):
+    normal   #f2f5f8 on #0b0f14  ~ 18:1
+    warning  #0b0f14 on #ffc400  ~ 12:1
+    over     #ffffff on #d6006f  ~ 5.1:1
+*/
+
+:root {
+  --ink-dark: #0b0f14;
+  --ink-light: #f2f5f8;
+
+  --normal-bg: #0b0f14;
+  --normal-fg: #f2f5f8;
+  --normal-accent: #5ce1ff;
+
+  --warning-bg: #ffc400;
+  --warning-fg: #0b0f14;
+
+  --over-bg: #d6006f;
+  --over-bg-alt: #8f004a;
+  --over-fg: #ffffff;
+
+  --radius: 14px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--normal-bg);
+  font-family: var(--font);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+body[data-state="normal"]  { --bg: var(--normal-bg);  --fg: var(--normal-fg);  --accent: var(--normal-accent); }
+body[data-state="warning"] { --bg: var(--warning-bg); --fg: var(--warning-fg); --accent: var(--warning-fg); }
+body[data-state="over"]    { --bg: var(--over-bg);    --fg: var(--over-fg);    --accent: var(--over-fg); }
+
+.stage {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: max(env(safe-area-inset-top), 1.5vmin) max(env(safe-area-inset-right), 3vmin)
+           max(env(safe-area-inset-bottom), 1.5vmin) max(env(safe-area-inset-left), 3vmin);
+  background: var(--bg);
+  color: var(--fg);
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+.speaker {
+  margin: 0;
+  padding-top: 1vmin;
+  font-size: clamp(20px, 3.6vmin, 44px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  opacity: 0.85;
+}
+
+.readout {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  min-height: 0;
+}
+
+.time {
+  margin: 0;
+  font-size: min(31vw, 56vh);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Longer overtime strings such as "+12:34" need a little less size. */
+body[data-long="true"] .time { font-size: min(26vw, 50vh); }
+
+.label {
+  margin: 1vmin 0 0;
+  font-size: clamp(24px, 6vmin, 72px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Progress meter. Pattern differs per state as a second, non-color cue. */
+.meter {
+  position: relative;
+  height: clamp(18px, 4vmin, 44px);
+  margin: 1.5vmin 0;
+  border: 3px solid var(--fg);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  background: var(--accent);
+  transition: transform 300ms linear;
+}
+
+body[data-state="warning"] .meter-fill {
+  background: repeating-linear-gradient(135deg, var(--warning-fg) 0 14px, transparent 14px 28px);
+}
+
+body[data-state="over"] .meter-fill {
+  transform: scaleX(1) !important;
+  background: repeating-linear-gradient(90deg, var(--over-fg) 0 12px, transparent 12px 24px);
+}
+
+/* Tick marking where the warning begins. */
+.meter-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--bg);
+  outline: 2px solid var(--fg);
+}
+
+/* Time's up flash: slow, under 1 Hz, luminance change kept modest. */
+@media (prefers-reduced-motion: no-preference) {
+  body[data-state="over"] .stage {
+    animation: over-flash 1.4s ease-in-out infinite;
+  }
+  @keyframes over-flash {
+    0%, 100% { background-color: var(--over-bg); }
+    50%      { background-color: var(--over-bg-alt); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage, .meter-fill { transition: none; }
+}
+
+/* Low-key operator entry point. Also reachable by long-pressing the display. */
+.open-controls {
+  position: absolute;
+  top: max(env(safe-area-inset-top), 1.5vmin);
+  right: max(env(safe-area-inset-right), 3vmin);
+  min-width: 88px;
+  min-height: 56px;
+  padding: 0 18px;
+  font: 600 18px/1 var(--font);
+  color: var(--fg);
+  background: transparent;
+  border: 2px solid currentColor;
+  border-radius: var(--radius);
+  opacity: 0.35;
+}
+.open-controls:active { opacity: 0.8; transform: scale(0.98); }
+.open-controls:focus-visible { opacity: 1; outline: 4px solid var(--fg); outline-offset: 3px; }
+
+/* Control panel */
+.panel {
+  width: min(560px, 92vw);
+  max-height: 92dvh;
+  padding: 0;
+  color: var(--ink-light);
+  background: #151b23;
+  border: 2px solid #3a4655;
+  border-radius: 20px;
+}
+.panel::backdrop { background: rgb(5 8 12 / 0.78); }
+
+.panel-body {
+  display: grid;
+  gap: 20px;
+  padding: 28px;
+  overflow-y: auto;
+}
+
+.panel h2 { margin: 0; font-size: 28px; }
+
+.field { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.field > label, .field > legend { font-size: 18px; font-weight: 600; padding: 0; }
+
+.field input[type="number"], .field input[type="text"] {
+  min-height: 56px;
+  padding: 0 14px;
+  font: 500 22px/1 var(--font);
+  color: var(--ink-light);
+  background: var(--ink-dark);
+  border: 2px solid #8795a6;
+  border-radius: 10px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.field input:focus-visible { outline: 4px solid var(--normal-accent); outline-offset: 2px; }
+
+.help { margin: 0; font-size: 17px; color: #b8c3cf; }
+
+.segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.segmented label { display: block; }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented span {
+  display: grid;
+  place-content: center;
+  min-height: 64px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink-light);
+  background: var(--ink-dark);
+  border: 2px solid #8795a6;
+  border-radius: 10px;
+}
+.segmented input:checked + span {
+  background: var(--normal-accent);
+  color: var(--ink-dark);
+  border-color: var(--normal-accent);
+}
+.segmented input:focus-visible + span { outline: 4px solid var(--ink-light); outline-offset: 2px; }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn {
+  min-height: 64px;
+  font: 700 22px/1 var(--font);
+  color: var(--ink-light);
+  background: transparent;
+  border: 2px solid #8795a6;
+  border-radius: 10px;
+}
+.btn.primary { color: var(--ink-dark); background: var(--normal-accent); border-color: var(--normal-accent); }
+.btn.ghost { border-color: transparent; text-decoration: underline; }
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 4px solid var(--ink-light); outline-offset: 2px; }
+.btn[hidden] { display: none; }
