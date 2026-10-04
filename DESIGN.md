@@ -8,7 +8,7 @@ Utility stage display, not a marketing page. Dark, high-contrast, accessibility-
 
 ## Layout
 
-- The time (`M:SS`) is the whole composition: `min(31vw, 56vh)`, weight 800, tabular numerals, system SF font stack. It fills about 90 percent of the width in either orientation.
+- The time (`M:SS`) is the whole composition: `min(34vw, 56vh)`, weight 800, tabular numerals, system SF font stack. It fills about 90 percent of the width in either orientation.
 - Under the time: a state label in large tracked caps.
 - Bottom: a progress meter with a tick at the warning threshold.
 - Top left: optional speaker name, small. Top right: a faint "Controls" button.
@@ -19,7 +19,7 @@ Utility stage display, not a marketing page. Dark, high-contrast, accessibility-
 | State | Background | Text | Label | Meter pattern |
 |---|---|---|---|---|
 | Normal | near-black `#0b0f14` | off-white `#f2f5f8` | Remaining | solid cyan fill |
-| Warning | amber `#ffc400` | near-black | "2 min left" or "5 min left", then "Last minute" | diagonal stripes |
+| Warning | amber `#ffc400` | near-black | "Wrap up", then "Last minute" under 60 sec | diagonal stripes |
 | Time's Up | magenta `#d6006f` | white | TIME'S UP, with Overtime as `+0:32` | vertical bars, full width |
 
 Each state differs in lightness and hue, and also in label text and meter pattern, so color is never the only cue. Time's Up also flashes slowly (1.4 s cycle, modest luminance swing). The flash is disabled under `prefers-reduced-motion`.

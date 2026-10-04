@@ -15,7 +15,6 @@
     panel: document.getElementById("panel"),
     customField: document.getElementById("custom-field"),
     customMinutes: document.getElementById("custom-minutes"),
-    customHelp: document.getElementById("custom-help"),
     warnSummary: document.getElementById("warn-summary"),
     speakerName: document.getElementById("speaker-name"),
     start: document.getElementById("btn-start"),
@@ -79,7 +78,7 @@
     if (remaining > 0) {
       text = fmt(Math.ceil(remaining / 1000));
       if (model.run === "paused") label = "Paused";
-      else if (state === "warning") label = Math.ceil(remaining / 1000) <= 60 ? "Last minute" : spoken(model.warnMs) + " left";
+      else if (state === "warning") label = Math.ceil(remaining / 1000) <= 60 ? "Last minute" : "Wrap up";
       else label = model.run === "ready" ? "Ready" : "Remaining";
     } else {
       text = "+" + fmt(Math.floor(-remaining / 1000));
@@ -141,7 +140,6 @@
     var slot = selectedSlotMs();
     var text = "Warning appears with " + spoken(warnFor(slot)) + " left.";
     el.warnSummary.textContent = text;
-    el.customHelp.textContent = text;
   }
 
   function applySlotChoice() {

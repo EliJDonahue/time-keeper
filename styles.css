@@ -61,6 +61,10 @@ body[data-state="over"]    { --bg: var(--over-bg);    --fg: var(--over-fg);    -
   transition: background-color 250ms ease, color 250ms ease;
 }
 
+.speaker { grid-row: 1; }
+.readout { grid-row: 2; }
+.meter { grid-row: 3; }
+
 .speaker {
   margin: 0;
   padding-top: 1vmin;
@@ -79,7 +83,7 @@ body[data-state="over"]    { --bg: var(--over-bg);    --fg: var(--over-fg);    -
 
 .time {
   margin: 0;
-  font-size: min(31vw, 56vh);
+  font-size: min(34vw, 56vh);
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.02em;
@@ -88,7 +92,7 @@ body[data-state="over"]    { --bg: var(--over-bg);    --fg: var(--over-fg);    -
 }
 
 /* Longer overtime strings such as "+12:34" need a little less size. */
-body[data-long="true"] .time { font-size: min(26vw, 50vh); }
+body[data-long="true"] .time { font-size: min(28vw, 50vh); }
 
 .label {
   margin: 1vmin 0 0;
@@ -190,6 +194,7 @@ body[data-state="over"] .meter-fill {
 .panel h2 { margin: 0; font-size: 28px; }
 
 .field { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.field[hidden] { display: none; }
 .field > label, .field > legend { font-size: 18px; font-weight: 600; padding: 0; }
 
 .field input[type="number"], .field input[type="text"] {
@@ -239,7 +244,7 @@ body[data-state="over"] .meter-fill {
   border-radius: 10px;
 }
 .btn.primary { color: var(--ink-dark); background: var(--normal-accent); border-color: var(--normal-accent); }
-.btn.ghost { border-color: transparent; text-decoration: underline; }
+.btn.ghost { grid-column: 1 / -1; border-color: transparent; text-decoration: underline; }
 .btn:active { transform: scale(0.98); }
 .btn:focus-visible { outline: 4px solid var(--ink-light); outline-offset: 2px; }
 .btn[hidden] { display: none; }
